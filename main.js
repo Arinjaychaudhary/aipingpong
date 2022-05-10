@@ -3,6 +3,7 @@ right_wristX="";
 object=[];
 confidence_="";
 GameStatus="";
+scoeRight="";
 /*created by prashant shukla */
 
 var paddle2 =10,paddle1=10;
@@ -37,15 +38,16 @@ function setup(){
 
 
 function draw(){
-
-  if(confidence_ > 0.0002)
+if(GameStatus == "start")
+{
+  if(scoreRight > 0.0002)
   {  
     fill("#FF0000");
   stroke("#FF0000");
   circle(right_wristX,right_wristY,50);
   console.log(confidence_);
 }
-
+}
 
  background(0); 
 image(video,0,0,700,600);
@@ -192,8 +194,8 @@ if(results.length>0)
   console.log(results);
   right_wristY=results[0].pose.rightWrist.y;
 right_wristX=results[0].pose.rightWrist.x;
-object=results;
-confidence_=results[0].pose.rightWrist.confidence;
+scoreRight = results[0].pose.Keypoints[10].score;
+
 
 }
 }
