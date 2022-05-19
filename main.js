@@ -1,19 +1,18 @@
-right_wristY="";
-right_wristX="";
-object=[];
-confidence_="";
+rightWristY="";
+rightWristX="";
+
 GameStatus="";
-scoeRight="";
-/*created by prashant shukla */
+scoreRightWrist="";
+/*created by arinjay */
 
 var paddle2 =10,paddle1=10;
 
 var paddle1X = 10,paddle1Height = 110;
 var paddle2Y = 685,paddle2Height = 70;
-
+var miss="";
 var score1 = 0, score2 =0;
 var paddle1Y;
-
+var touch="";
 var  playerscore =0;
 var audio1;
 var pcscore =0;
@@ -25,29 +24,33 @@ var ball = {
     dx:3,
     dy:3
 }
-
+function preload(){
+touch = loadSound("ball_touch_paddel.wav");
+miss = loadSound("missed.wav");
+}
 function setup(){
-  var canvas =  createCanvas(700,600);
-  canvas.parent("canvas");
-  video=createCapture(VIDEO);
- video.size(700,600);
- video.hide()
- poseNet=ml5.poseNet(video,modelLoaded);
- poseNet.on('pose',gotPoses);
+canvas =  createCanvas(700,600);
+canvas.parent("canvas");
+video=createCapture(VIDEO);
+video.size(700,600);
+video.hide();
+poseNet=ml5.poseNet(video,modelLoaded);
+poseNet.on('pose',gotPoses);
 }
 
 
 function draw(){
-if(GameStatus == "start")
-{
-  if(scoreRight > 0.0002)
+  image(video,0,0,700,600);
+
+  if(scoreRightWrist > 0.0002)
   {  
     fill("#FF0000");
   stroke("#FF0000");
-  circle(right_wristX,right_wristY,50);
-  console.log(confidence_);
+  circle(rightWristX,rightWristY,50);
+ 
+
 }
-}
+
 
  background(0); 
 image(video,0,0,700,600);
@@ -143,11 +146,13 @@ function move(){
   if (ball.x-2.5*ball.r/2< 0){
   if (ball.y >= paddle1Y&& ball.y <= paddle1Y + paddle1Height) {
     ball.dx = -ball.dx+0.5; 
+    touch.play();
   }
   else{
     pcscore++;
     reset();
     navigator.vibrate(100);
+    miss.play();
   }
 }
 if(pcscore ==4){
@@ -188,14 +193,14 @@ function paddleInCanvas(){
     mouseY =0;
   }  
 }
-function gotPoses(results){
-if(results.length>0)
+function gotPoses(results)
 {
-  console.log(results);
-  right_wristY=results[0].pose.rightWrist.y;
-right_wristX=results[0].pose.rightWrist.x;
-scoreRight = results[0].pose.Keypoints[10].score;
+  if(results.length > 0)
+  {
 
-
-}
+    rightWristY = results[0].pose.rightWrist.y;
+    rightWristX = results[0].pose.rightWrist.x;
+    scoreRightWrist =  results[0].pose.keypoints[10].score;
+    console.log(scoreRightWrist);
+  }
 }
